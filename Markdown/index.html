@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Markdown</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<script src="../lib/vue.js"></script>
+<script src="../lib/marked.js"></script>
+
+<body>
+  <div id="notebook">
+    <!-- 侧边栏 -->
+    <aside class="side-bar">
+      <!-- 笔记列表 -->
+      <div class="toolbar">
+        <button @click="addNote" :title="addButtonTitle">
+          <i class="material-icons">add</i>
+          Add note
+        </button>
+        <div class="notes">
+          <!-- 笔记列表显示区域 -->
+          <div class="note" v-for="(note, index) in notes" :key="index" @click="selectNote(note)">
+            {{note.title}}
+          </div>
+        </div>
+      </div>
+    </aside>
+    <!-- 主面板页面 -->
+    <section class="main">
+      <textarea v-model="selectedId?selectedNote.content:content" @click="log()"></textarea>
+    </section>
+    <aside class="preview" v-html="notePreview">
+      <!-- {{notePreview}} -->
+    </aside>
+  </div>
+
+
+  <script src="./js/index.js"></script>
+</body>
+
+</html>
