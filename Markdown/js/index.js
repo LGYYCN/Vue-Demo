@@ -3,8 +3,8 @@ new Vue({
   data() {
     return {
       content: '',
-      notes: [],
-      selectedId: null,
+      notes: JSON.parse(localStorage.getItem('notes')) || [],
+      selectedId: localStorage.getItem('selected-id') || null,
     }
   },
   created() {
@@ -21,6 +21,39 @@ new Vue({
     },
     notePreview() {
       return this.selectedNote ? marked(this.selectedNote.content) : ''
+    },
+    sortedNotes() {
+      return this.notes
+        .slice()
+        .sort((a, b) => {
+          return a.created - b.created
+        })
+        .sort((a, b) => {
+          return a.favorite === b.favorite ? 0 : a.favorite ? -1 : 1
+        })
+    },
+    linesCount() {
+      // 计算行数
+      if (this.selectedNote) {
+        return this.selectedNote.content.split(/\r\n|\n|\r/).length
+      }
+    },
+    wordsCount() {
+      if (this.selectedNote) {
+        let s = this.selectedNote.content
+        // 将 换行 转为 空格
+        s = s.replace(/\n/g, ' ')
+        // 排除开头与结尾的空格
+        s = s.replace(/(^\s*)|(\s*$)/gi, '')
+        // 将多个重复的空格转换为一个
+        s = s.replace(/\s\s+/gi, ' ')
+        return s.split(' ').length
+      }
+    },
+    charactersCount() {
+      if (this.selectedNote) {
+        return this.selectedNote.content.split('').length
+      }
     },
   },
   methods: {
@@ -40,8 +73,19 @@ new Vue({
     selectNote(note) {
       this.selectedId = note.id
     },
-    log() {
-      console.log(this.selectedNode)
+    saveNotes() {
+      localStorage.setItem('notes', JSON.stringify(this.notes))
+    },
+    removeNote() {
+      if (this.selectedNote && confirm('Delete the note?')) {
+        const index = this.notes.indexOf(this.selectedNote)
+        if (index !== -1) {
+          this.notes.splice(index, 1)
+        }
+      }
+    },
+    favoriteNote() {
+      this.selectedNote.favorite = !this.selectedNote.favorite
     },
   },
   /**
@@ -51,31 +95,21 @@ new Vue({
    * [handler] 属性有两个参数 [newVal] [oldVal], 即被侦听的值的新值与旧值
    */
   watch: {
-    // info_content: {
-    //   handler(val, oldVal) {
-    //     console.log(val, oldVal)
-    //     localStorage.setItem('content', val)
-    //   },
-    //   /**
-    //    * 与 [handler] 一起使用的还有 [deep]
-    //    * [deep] 是一个 [布尔] 类型
-    //    * 值为 [true] 则 Vue 会以递归的方式侦听对象内部值的变化
-    //    */
-    //   deep: false,
-    //   /**
-    //    * 还有 [immediate] 也是一个 [布尔] 类型
-    //    * 值为 [true] 会在页面刷新时立即触发调用处理函数, 不需要等待数据的第一次改变
-    //    */
-    //   immediate: false,
-    // },
-    /**
-     * 上述方法可以简写为如下
-     * content(val,oldVal){
-     *   console.log(val,oldVal);
-     * }
-     */
-    // 因为简写 + 可以使用方法名, 故最终简写形式如下
-    // content: 'saveNote',
+    notes: {
+      handler: 'saveNotes',
+      deep: true,
+    },
+    selectedId(val) {
+      localStorage.setItem('selected-id', val)
+    },
+    selectedNote(val) {
+      console.log(val)
+    },
+  },
+  filters: {
+    date(time) {
+      return moment(time).format('YYYY/MM/DD HH:mm:ss')
+    },
   },
 })
 // const html=marked('**bold** *Italic* [link](https://www.baidu.com)') // console.log(html)
