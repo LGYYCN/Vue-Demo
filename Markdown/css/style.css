@@ -46,16 +46,16 @@ body {
   margin: 5px auto;
 }
 
-.note {
+.side-bar .note {
   padding: 16px;
   cursor: pointer;
 }
 
-.note:hover {
+.side-bar .note:hover {
   background: #ade2ca;
 }
 
-.note .icon {
+.side-bar .note .icon {
   float: right;
 }
 
@@ -111,18 +111,19 @@ input {
   flex-direction: column;
 }
 
+.main .toolbar {
+  padding: 5px 8px;
+  box-sizing: border-box;
+}
+
 .main,
 .preview {
   width: 40%;
 }
 
-.main .toolbar {
-  padding: 4px;
-  box-sizing: border-box;
-}
-
 .status-bar {
   color: #777;
+  background-color: #f0f9f5;
 }
 
 .status-bar > span {

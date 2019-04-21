@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
 
 <head>
   <meta charset="UTF-8">
@@ -12,6 +12,7 @@
 <script src="../lib/vue.js"></script>
 <script src="../lib/marked.js"></script>
 <script src="../lib/moment.js"></script>
+<script src="../lib/vue-i18n.js"></script>
 
 <body>
   <div id="notebook">
@@ -22,7 +23,7 @@
         <div class="add-btn">
           <button @click="addNote" :title="addButtonTitle">
             <i class="material-icons">add</i>
-            Add note
+            {{$t("toolbar.add")}}
           </button>
         </div>
         <div class="notes">
@@ -42,27 +43,27 @@
         <div class="toolbar">
           <!-- 工具栏 -->
           <input type="text" v-model="selectedNote.title" placeholder="None title">
-          <button @click="removeNote" title="Remove note"><i class="material-icons">delete</i></button>
-          <button @click="favoriteNote" title="Favorite note"><i
+          <button @click="removeNote" :title="$t('toolbar.delete')"><i class="material-icons">delete</i></button>
+          <button @click="favoriteNote" :title="$t('toolbar.favorite')"><i
               class="material-icons">{{selectedNote.favorite?'star':'star_border'}}</i></button>
         </div>
         <textarea v-model="selectedNote.content"></textarea>
         <div class="toolbar status-bar">
           <!-- 新的状态栏 -->
           <span class="lines">
-            <span class="label">Lines</span>
+            <span class="label">{{$t("toolbar.lines")}}</span>
             <span class="value">{{linesCount}}</span>
           </span>
           <span class="words">
-            <span class="label">Words</span>
+            <span class="label">{{$t("toolbar.words")}}</span>
             <span class="value">{{wordsCount}}</span>
           </span>
           <span class="characters">
-            <span class="label">Characters</span>
+            <span class="label">{{$t("toolbar.characters")}}</span>
             <span class="value">{{charactersCount}}</span>
           </span>
           <span class="date">
-            <span class="label">Created</span>
+            <span class="label">{{$t("toolbar.created")}}</span>
             <span class="value">{{selectedNote.created | date}}</span>
           </span>
         </div>
@@ -73,8 +74,8 @@
     </template>
   </div>
 
-
   <script src="./js/index.js"></script>
+  <!-- <script src="./js/md-i18n.js"></script> -->
 </body>
 
 </html>

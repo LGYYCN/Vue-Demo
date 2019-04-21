@@ -1,4 +1,81 @@
-new Vue({
+// 获取终端的相关信息
+let terminal = {
+  // 辨别移动终端类型
+  platform: (function() {
+    let u = navigator.userAgent
+    let app = navigator.appVersion
+
+    return {
+      //IE内核
+      windows: u.indexOf('Windows') > -1,
+      //opera内核
+      presto: u.indexOf('Presto') > -1,
+      //苹果、谷歌内核
+      webKit: u.indexOf('AppleWebKit') > -1,
+      //火狐内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1,
+      //是否为移动终端
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/) || !!u.match(/AppleWebKit/),
+      //ios终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/),
+      //android终端或者uc浏览器
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1,
+      //是否iPad
+      iPad: u.indexOf('iPad') > -1,
+      //是否为iPhone或者QQHD浏览器
+      iPhone: u.indexOf('iPhone') > -1,
+      //是否为mac系统
+      Mac: u.indexOf('Macintosh') > -1,
+      //是否web应该程序，没有头部与底部
+      webApp: u.indexOf('Safari') == -1,
+    }
+  })(),
+  // 辨别移动终端的语言：zh-cn、en-us、ko-kr、ja-jp...
+  language: (navigator.browserLanguage || navigator.language).toLowerCase(),
+}
+
+console.log((navigator.browserLanguage || navigator.language).toLowerCase())
+// Ready translated locale messages
+
+const messages = {
+  'zh-cn': {
+    toolbar: {
+      add: '添加笔记',
+      lines: '行数',
+      words: '词数',
+      characters: '字数',
+      created: '记录时间',
+      delete: '删除',
+      favorite: '收藏',
+    },
+  },
+  en: {
+    toolbar: {
+      add: 'Add Note',
+      lines: 'Lines',
+      words: 'Words',
+      characters: 'Characters',
+      created: 'Created',
+      delete: 'Remove Note',
+      favorite: 'Favorite Note',
+    },
+  },
+}
+
+// Create VueI18n instance with options
+const i18n = new VueI18n({
+  locale: terminal.language, // set locale
+  messages, // set locale messages
+})
+
+// console.log(terminal.language)
+
+// Create a Vue instance with `i18n` option
+// md({ i18n }).$mount('#app')
+
+// Now the app has started!
+
+let md = new Vue({
   el: '#notebook',
   data() {
     return {
@@ -7,14 +84,13 @@ new Vue({
       selectedId: localStorage.getItem('selected-id') || null,
     }
   },
-  created() {
-    this.content =
-      localStorage.getItem('content') || 'You can write in **Markdown**!'
-    console.log(this.content)
-  },
   computed: {
     addButtonTitle() {
-      return `${this.notes.length} note(s) already!`
+      if (terminal.language == 'en') {
+        return `${this.notes.length} note(s) already!`
+      } else {
+        return `${this.notes.length} 条记录!`
+      }
     },
     selectedNote() {
       return this.notes.find(note => note.id === this.selectedId)
@@ -111,5 +187,7 @@ new Vue({
       return moment(time).format('YYYY/MM/DD HH:mm:ss')
     },
   },
+  i18n,
 })
-// const html=marked('**bold** *Italic* [link](https://www.baidu.com)') // console.log(html)
+
+/// const html=marked('**bold** *Italic* [link](https://www.baidu.com)') // console.log(html)
